@@ -333,13 +333,13 @@ export default function Home() {
                 imageUrl={selected.lineRegisterImageUrl}
                 extra={
                   selected.lineIconUrl ? (
-                    <div className="flex items-center gap-1.5 pt-1 border-t border-green-100 mt-1">
+                    <div className="flex flex-col items-center gap-2 pt-2 border-t border-green-100 mt-1">
                       <Image
                         src={selected.lineIconUrl}
                         alt="LINE"
-                        width={18}
-                        height={18}
-                        className="w-4 h-4 rounded-full border border-gray-200 shrink-0"
+                        width={120}
+                        height={120}
+                        className="w-28 h-28 rounded-xl border border-gray-200 object-cover"
                         unoptimized
                       />
                       <span className="text-xs text-gray-500">LINEアカウント</span>
