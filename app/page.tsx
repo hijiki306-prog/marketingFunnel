@@ -342,7 +342,7 @@ export default function Home() {
                         className="w-28 h-28 rounded-xl border border-gray-200 object-cover"
                         unoptimized
                       />
-                      <span className="text-xs text-gray-500">LINEアカウント</span>
+                      <span className="text-xs text-gray-500">LINEアイコン画像</span>
                     </div>
                   ) : undefined
                 }
