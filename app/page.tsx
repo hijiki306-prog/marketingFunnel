@@ -81,24 +81,24 @@ function VerticalStepCard({
 
   return (
     <div
-      className={`rounded-xl border-2 ${c.border} flex flex-row overflow-hidden shadow-sm bg-white h-[280px]`}
+      className={`rounded-xl border-2 ${c.border} flex flex-col md:flex-row overflow-hidden shadow-sm bg-white md:h-[280px]`}
     >
-      {/* 左: ステップバッジ＋ラベル */}
+      {/* ステップバッジ＋ラベル: モバイルは横並び、PCは縦並び */}
       <div
-        className={`${c.sideBg} flex flex-col items-center justify-center px-6 gap-3 border-r ${c.border} w-[140px] shrink-0`}
+        className={`${c.sideBg} flex flex-row md:flex-col items-center justify-start md:justify-center px-4 md:px-6 py-3 md:py-0 gap-3 border-b md:border-b-0 md:border-r ${c.border} md:w-[140px] shrink-0`}
       >
         <span
-          className={`${c.badge} text-white text-xl font-bold w-14 h-14 rounded-full flex items-center justify-center shrink-0`}
+          className={`${c.badge} text-white text-lg md:text-xl font-bold w-10 h-10 md:w-14 md:h-14 rounded-full flex items-center justify-center shrink-0`}
         >
           {step}
         </span>
-        <span className="text-base font-bold text-gray-600 text-center leading-snug">
+        <span className="text-sm md:text-base font-bold text-gray-600 text-center leading-snug">
           {label}
         </span>
       </div>
 
-      {/* 中: 画像 */}
-      <div className="w-[220px] h-[280px] shrink-0 bg-gray-50 border-r border-gray-100 overflow-hidden">
+      {/* 画像 */}
+      <div className="w-full h-[180px] md:w-[220px] md:h-[280px] shrink-0 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-100 overflow-hidden">
         {isVideo && validVideoUrls.length > 0 ? (
           <a
             href={validVideoUrls[0]}
@@ -114,9 +114,8 @@ function VerticalStepCard({
         )}
       </div>
 
-      {/* 右: コンテンツ */}
-      <div className="flex-1 px-8 py-6 flex flex-col justify-center items-center text-center gap-3 overflow-y-auto">
-        {/* 動画リンク（複数の場合のみ表示） */}
+      {/* コンテンツ */}
+      <div className="flex-1 px-4 md:px-8 py-4 md:py-6 flex flex-col justify-center items-center text-center gap-3 overflow-y-auto">
         {isVideo && validVideoUrls.length > 1 &&
           validVideoUrls.map((url, i) => (
             <a
@@ -124,7 +123,7 @@ function VerticalStepCard({
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`text-lg ${c.link} hover:underline truncate`}
+              className={`text-base md:text-lg ${c.link} hover:underline truncate`}
             >
               動画{i + 1} ▶
             </a>
@@ -139,17 +138,15 @@ function VerticalStepCard({
             動画を見る ▶
           </a>
         )}
-        {/* CTAテキスト */}
         {validCtas.length > 0 && (
           <div className={`${c.bg} rounded-lg border ${c.border} px-3 py-1.5 inline-block`}>
             {validCtas.map((text, i) => (
-              <p key={i} className="text-lg font-medium text-gray-800 leading-snug">
+              <p key={i} className="text-base md:text-lg font-medium text-gray-800 leading-snug">
                 {text}
               </p>
             ))}
           </div>
         )}
-        {/* 通常リンク */}
         {!isVideo &&
           validLinks.map((url, i) => (
             <a
@@ -157,14 +154,13 @@ function VerticalStepCard({
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`text-lg ${c.link} hover:underline truncate`}
+              className={`text-base md:text-lg ${c.link} hover:underline truncate`}
             >
               {linkLabel}{validLinks.length > 1 ? i + 1 : ""} →
             </a>
           ))}
-        {/* 画像未登録かつリンクもなし */}
         {!imageUrl && validVideoUrls.length === 0 && validLinks.length === 0 && validCtas.length === 0 && !extra && (
-          <span className="text-lg text-gray-300">未登録</span>
+          <span className="text-base md:text-lg text-gray-300">未登録</span>
         )}
         {extra}
       </div>
@@ -201,16 +197,36 @@ export default function Home() {
   const selected = funnels.find((f) => f.id === selectedId) ?? null;
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
-      {/* ── 左サイドバー ── */}
-      <aside className="w-72 bg-white border-r border-gray-200 flex flex-col shrink-0">
-        {/* サイドバーヘッダー */}
+    <div className="flex flex-col md:flex-row h-screen bg-gray-50 overflow-hidden">
+
+      {/* ── モバイル用トップバー ── */}
+      <div className="md:hidden bg-white border-b border-gray-200 px-3 py-3 flex items-center gap-2 shrink-0">
+        <h1 className="text-sm font-bold text-gray-900 shrink-0">導線マネージャー</h1>
+        <select
+          className="flex-1 border border-gray-200 rounded-lg px-2 py-2 text-sm bg-white"
+          value={selectedId ?? ""}
+          onChange={(e) => setSelectedId(e.target.value || null)}
+        >
+          {loading && <option>読み込み中...</option>}
+          {!loading && funnels.length === 0 && <option>導線がありません</option>}
+          {funnels.map((f) => (
+            <option key={f.id} value={f.id}>{f.name}</option>
+          ))}
+        </select>
+        <Link
+          href="/funnels/new"
+          className="bg-blue-600 text-white text-sm font-bold px-3 py-2 rounded-lg shrink-0"
+        >
+          ＋
+        </Link>
+      </div>
+
+      {/* ── PC用左サイドバー ── */}
+      <aside className="hidden md:flex w-72 bg-white border-r border-gray-200 flex-col shrink-0">
         <div className="px-5 py-6 border-b border-gray-100">
           <h1 className="text-lg font-bold text-gray-900">導線マネージャー</h1>
           <p className="text-sm text-gray-400 mt-1">マーケティング導線一覧</p>
         </div>
-
-        {/* 導線リスト */}
         <nav className="flex-1 overflow-y-auto py-3 px-3">
           {loading && (
             <p className="text-sm text-gray-400 text-center py-4">読み込み中...</p>
@@ -242,8 +258,6 @@ export default function Home() {
             </button>
           ))}
         </nav>
-
-        {/* 追加ボタン */}
         <div className="p-4 border-t border-gray-100">
           <Link
             href="/funnels/new"
@@ -254,19 +268,18 @@ export default function Home() {
         </div>
       </aside>
 
-      {/* ── 右コンテンツエリア ── */}
+      {/* ── コンテンツエリア ── */}
       <main className="flex-1 overflow-y-auto">
-        {/* 未選択 */}
         {!loading && !selected && (
           <div className="flex items-center justify-center h-full">
-            <p className="text-gray-400">左のメニューから導線を選択してください</p>
+            <p className="text-gray-400 text-sm">左のメニューから導線を選択してください</p>
           </div>
         )}
 
         {selected && (
-          <div className="max-w-4xl mx-auto px-10 py-8">
+          <div className="max-w-4xl mx-auto px-4 md:px-10 py-5 md:py-8">
             {/* 導線ヘッダー */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center justify-between mb-5 md:mb-8">
               <div className="flex items-center gap-3">
                 {selected.lineIconUrl && (
                   <Image
@@ -274,25 +287,25 @@ export default function Home() {
                     alt="LINEアイコン"
                     width={40}
                     height={40}
-                    className="w-10 h-10 rounded-full object-cover border border-gray-200"
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-full object-cover border border-gray-200"
                     unoptimized
                   />
                 )}
                 <div>
-                  <h2 className="text-3xl font-bold text-gray-900">{selected.name}</h2>
-                  <p className="text-base text-gray-400 mt-1">マーケティング導線フロー</p>
+                  <h2 className="text-xl md:text-3xl font-bold text-gray-900">{selected.name}</h2>
+                  <p className="text-xs md:text-base text-gray-400 mt-0.5">マーケティング導線フロー</p>
                 </div>
               </div>
               <div className="flex gap-2">
                 <Link
                   href={`/funnels/${selected.id}/edit`}
-                  className="text-lg text-gray-600 hover:text-gray-900 border border-gray-300 hover:border-gray-400 px-6 py-2.5 rounded-xl transition-colors font-medium"
+                  className="text-sm md:text-lg text-gray-600 hover:text-gray-900 border border-gray-300 hover:border-gray-400 px-3 md:px-6 py-2 md:py-2.5 rounded-xl transition-colors font-medium"
                 >
                   編集
                 </Link>
                 <button
                   onClick={() => deleteFunnel(selected.id, selected.name)}
-                  className="text-lg text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-6 py-2.5 rounded-xl transition-colors font-medium"
+                  className="text-sm md:text-lg text-red-500 hover:text-red-700 border border-red-200 hover:border-red-400 px-3 md:px-6 py-2 md:py-2.5 rounded-xl transition-colors font-medium"
                 >
                   削除
                 </button>
@@ -301,7 +314,6 @@ export default function Home() {
 
             {/* 縦フロー */}
             <div className="flex flex-col">
-              {/* STEP 1: 広告動画 */}
               <VerticalStepCard
                 step={1} label="広告動画" color="blue"
                 imageUrl={selected.adVideoImageUrl}
@@ -311,7 +323,6 @@ export default function Home() {
               />
               <DownArrow />
 
-              {/* STEP 2: ランディングページ */}
               <VerticalStepCard
                 step={2} label="LP（メール入力）" color="purple"
                 imageUrl={selected.adLpImageUrl}
@@ -319,7 +330,6 @@ export default function Home() {
               />
               <DownArrow />
 
-              {/* STEP 3: サンクスページ */}
               <VerticalStepCard
                 step={3} label="サンクスページ" color="orange"
                 imageUrl={selected.tpImageUrl}
@@ -327,7 +337,6 @@ export default function Home() {
               />
               <DownArrow />
 
-              {/* STEP 4: LINE登録 */}
               <VerticalStepCard
                 step={4} label="LINE登録" color="green"
                 imageUrl={selected.lineRegisterImageUrl}
@@ -349,13 +358,11 @@ export default function Home() {
               />
               <DownArrow />
 
-              {/* STEP 5: LINE配信 */}
               <VerticalStepCard
                 step={5} label="LINE配信1通目" color="emerald"
                 imageUrl={selected.lineDeliveryImageUrl}
               />
 
-              {/* STEP 6: 特典（任意） */}
               {(selected.distributionUrls ?? []).some(Boolean) && (
                 <>
                   <DownArrow />
